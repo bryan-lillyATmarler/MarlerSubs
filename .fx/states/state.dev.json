@@ -1,0 +1,39 @@
+{
+    "solution": {
+        "provisionSucceeded": true,
+        "teamsAppTenantId": "26840c0d-5934-490d-8633-b1f52240595d",
+        "subscriptionId": "add5c8a3-3053-4799-8748-123aee274c6f",
+        "subscriptionName": "Azure subscription 1",
+        "tenantId": "26840c0d-5934-490d-8633-b1f52240595d",
+        "needCreateResourceGroup": false,
+        "resourceGroupName": "marler-resource",
+        "location": "westus2",
+        "resourceNameSuffix": "3500a7"
+    },
+    "fx-resource-appstudio": {
+        "tenantId": "26840c0d-5934-490d-8633-b1f52240595d",
+        "teamsAppId": "da3f8ed0-2882-4419-8503-037f2c87e41e"
+    },
+    "fx-resource-frontend-hosting": {
+        "indexPath": "/index.html#",
+        "domain": "marlersubs803544tab.z5.web.core.windows.net",
+        "endpoint": "https://marlersubs803544tab.z5.web.core.windows.net",
+        "storageResourceId": "/subscriptions/add5c8a3-3053-4799-8748-123aee274c6f/resourceGroups/marler-resource/providers/Microsoft.Storage/storageAccounts/marlersubs803544tab"
+    },
+    "fx-resource-aad-app-for-teams": {
+        "clientId": "b976f3d3-20e7-4f09-8d15-48678f739f2e",
+        "clientSecret": "{{fx-resource-aad-app-for-teams.clientSecret}}",
+        "objectId": "32da524b-96a7-48de-8d46-1cc7c4b70992",
+        "oauth2PermissionScopeId": "73f1a5ae-44b5-4f23-b737-a7c19b3ddcda",
+        "tenantId": "26840c0d-5934-490d-8633-b1f52240595d",
+        "oauthHost": "https://login.microsoftonline.com",
+        "oauthAuthority": "https://login.microsoftonline.com/26840c0d-5934-490d-8633-b1f52240595d",
+        "applicationIdUris": "api://marlersubs803544tab.z5.web.core.windows.net/b976f3d3-20e7-4f09-8d15-48678f739f2e",
+        "frontendEndpoint": "https://marlersubs803544tab.z5.web.core.windows.net"
+    },
+    "fx-resource-identity": {
+        "identityName": "marlersubs803544",
+        "identityResourceId": "/subscriptions/add5c8a3-3053-4799-8748-123aee274c6f/resourceGroups/marler-resource/providers/Microsoft.ManagedIdentity/userAssignedIdentities/marlersubs803544",
+        "identityClientId": "1ba8984d-dcb0-4798-a497-ef500afee195"
+    }
+}
