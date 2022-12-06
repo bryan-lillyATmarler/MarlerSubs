@@ -17,7 +17,7 @@ const Dashboard = () => {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             setEmployeeNames(data.data)
         });
         setIsFetching(false)
