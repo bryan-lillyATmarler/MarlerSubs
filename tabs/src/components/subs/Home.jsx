@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { mergeStyleSets, initializeIcons, Image } from "@fluentui/react";
+import { initializeIcons, Image } from "@fluentui/react";
 import { useData } from "@microsoft/teamsfx-react";
 import { TeamsFxContext } from "../Context";
 import { useEffect } from "react";
@@ -18,19 +18,16 @@ export function Home() {
   const userName = (loading || error) ? "": data.displayName;
 
   initializeIcons();
-  
-  const styles = mergeStyleSets({
-    root: { selectors: { '> *': { marginBottom: 15, } } },
-    control: { width: '100%' },
-  });
+
+  const [subData, setSubData] = useState([]);
 
   useEffect(() => {
     fetchUserData();
     //eslint-disable-next-line
-  }, [loading]);
+  }, [loading, subData]);
 
   //data from DB
-  const [subData, setSubData] = useState([])
+  
 
   const url = 'https://marler-api.herokuapp.com/api/v1/subs';
 
@@ -43,7 +40,10 @@ export function Home() {
       }).then((res) => res.json())
         .then((data) => {
             if(data.success){
-                setSubData(data.data);
+                let sortedData = data.data.sort((a, b) => {
+                  return new Date(b.date) - new Date(a.date)
+                })
+                setSubData(sortedData);
             } else {
                 
             }          
@@ -57,18 +57,18 @@ export function Home() {
         <Image className="mx-auto" src='/marlerTrans.png' alt="Marler Integrity" width={350} />
         <h1 className="text-center">{userName ? userName : "Can't find your username"}</h1>
       </div>
-      {userName !== 'Bryan Lilly' &&
+      {userName !== 'Byan Lilly' &&
         <>
           <SubForm data={subData} setData={setSubData} userName={userName} />
 
           <div className="px-5 mb-10">
-            <SubTable data={subData} />
+            <SubTable data={subData} setData={setSubData} />
           </div>
         </>
       }
 
       {/* ADMIN STUFF */}
-      {userName === 'Bryan Lilly' &&
+      {userName === 'Byan Lilly' &&
         <>
           <div>
             <h1 className="text-2xl text-center">Sub Administration Dashboard</h1>
@@ -77,6 +77,7 @@ export function Home() {
           <Dashboard />
         </>
       }
+      <div className="h-40"></div>
     </>
   );
 }
