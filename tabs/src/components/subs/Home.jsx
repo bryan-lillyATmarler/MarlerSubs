@@ -57,7 +57,7 @@ export function Home() {
         <Image className="mx-auto" src='/marlerTrans.png' alt="Marler Integrity" width={350} />
         <h1 className="text-center">{userName ? userName : "Can't find your username"}</h1>
       </div>
-      {userName !== 'Bryan Lilly' &&
+      {userName !== 'Byan Lilly' &&
         <>
           <SubForm data={subData} setData={setSubData} userName={userName} />
 
@@ -68,7 +68,7 @@ export function Home() {
       }
 
       {/* ADMIN STUFF */}
-      {userName === 'Bryan Lilly' &&
+      {userName === 'Byan Lilly' &&
         <>
           <div>
             <h1 className="text-2xl text-center">Sub Administration Dashboard</h1>
