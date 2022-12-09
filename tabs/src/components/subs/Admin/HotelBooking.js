@@ -1,5 +1,6 @@
 import { DatePicker, Dropdown, TextField } from '@fluentui/react'
 import React, { useState } from 'react'
+import HotelTable from './HotelTable';
 
 const HotelBooking = () => {
     const [hotelEmployee, setHotelEmployee] = useState('');
@@ -117,7 +118,7 @@ const HotelBooking = () => {
             </div>
         </form>
     
-
+        <HotelTable />
     </div>
   )
 }
