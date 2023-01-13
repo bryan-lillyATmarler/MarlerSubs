@@ -4,6 +4,7 @@ import { useBoolean } from '@fluentui/react-hooks';
 import { DatePicker, TextField } from '@fluentui/react';
 import { FcCheckmark } from "react-icons/fc";
 import { FcHighPriority } from "react-icons/fc";
+import { AiOutlineCheck } from "react-icons/ai";
 
 const modelProps = {
     isBlocking: false,
@@ -33,6 +34,7 @@ const SubTable = (props) => {
     }
 
     const handleDateChange = (value) => {
+
         setSubDate(value);
     }
 
@@ -109,17 +111,19 @@ const SubTable = (props) => {
                         <th className="border border-slate-400">Sub Type</th>
                         <th className="border border-slate-400">Hotel</th>
                         <th className="border border-slate-400">Town</th>
+                        <th className="border border-slate-400 w-20">Approved</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
                         props.data.map((sub) => {
                             return (
-                                <tr key={sub._id} onClick={() => handleEditSub(sub._id, sub.date, sub.hotel, sub.town)} className='cursor-pointer'>
+                                <tr key={sub._id} onClick={sub.approved ? () => {} : () => handleEditSub(sub._id, sub.date, sub.hotel, sub.town)} className={`${sub.approved ? 'bg-green-300' : 'cursor-pointer'} `}>
                                     <td className="border border-slate-400 text-center h-10">{new Date(sub.date).toLocaleDateString("en-US", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</td>
                                     <td className="border border-slate-400 text-center h-10">{sub.subType}</td>
                                     <td className="border border-slate-400 text-center h-10">{sub.hotel}</td>
                                     <td className="border border-slate-400 text-center h-10">{sub.town}</td>
+                                    <td className="border border-slate-400 text-center h-10">{sub.approved ? <AiOutlineCheck color='green' size={20} className='m-auto' /> : ''}</td>
                                 </tr>
                             )
                         })

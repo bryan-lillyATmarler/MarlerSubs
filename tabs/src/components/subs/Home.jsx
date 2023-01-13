@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import Dashboard from "./Admin/Dashboard";
 import SubForm  from "./SubForm";
 import SubTable from "./SubTable";
+import BookedHotels from "./BookedHotels";
 
 export function Home() {
   const { teamsfx } = useContext(TeamsFxContext);
@@ -19,12 +20,14 @@ export function Home() {
 
   initializeIcons();
 
+
   const [subData, setSubData] = useState([]);
 
   useEffect(() => {
+    // console.log(data)
     fetchUserData();
     //eslint-disable-next-line
-  }, [loading, subData]);
+  }, [data]);
 
   //data from DB
   
@@ -45,7 +48,7 @@ export function Home() {
                 })
                 setSubData(sortedData);
             } else {
-                
+                //what to do if not success??
             }          
         });
     }
@@ -57,8 +60,10 @@ export function Home() {
         <Image className="mx-auto" src='/marlerTrans.png' alt="Marler Integrity" width={350} />
         <h1 className="text-center">{userName ? userName : "Can't find your username"}</h1>
       </div>
+      
       {userName !== 'Byan Lilly' &&
         <>
+          <BookedHotels userName={userName} />
           <SubForm data={subData} setData={setSubData} userName={userName} />
 
           <div className="px-5 mb-10">

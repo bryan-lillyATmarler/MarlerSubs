@@ -6,7 +6,7 @@ import SubmitFail from './SubmitFail';
 const SubForm = (props) => {
 
     //sub data state
-    const [subDate, setSubDate] = useState('');
+    const [subDate, setSubDate] = useState(new Date());
     const [subType, setSubType] = useState('');
     const [subHotel, setSubHotel] = useState('');
     const [subTown, setSubTown] = useState('');
@@ -14,11 +14,31 @@ const SubForm = (props) => {
 
     //handle subType change
     const handleSubTypeChange = (e, selectedOption) => {
+        if(selectedOption.text === 'Full Sub'){
+            setSubHotel('N/A');
+            setSubTown('N/A');
+        } else {
+            setSubHotel('');
+            setSubTown('');
+        }
         setSubType(selectedOption.text);
     }
 
     //handle sub date change
     const handleDateChange = (value) => {
+        let currentDate = new Date();
+        let enteredDate = new Date(value);
+
+        if((currentDate - enteredDate) > 12096e5){
+            window.alert('Cannot select a date from more than 2 weeks ago');
+            value = new Date();
+        }
+
+        if(enteredDate > currentDate){
+            window.alert('Cannot select a date in the future');
+            value = new Date();
+        }
+
         setSubDate(value);
         // console.log(value)
     }
@@ -67,9 +87,13 @@ const SubForm = (props) => {
                 .then((data) => {
                     if (data.success) {
                         setSuccess('success');
+                        console.log(data)
                         newData.push(data.data);
+                        newData.sort((a, b) => {
+                            return new Date(b.date) - new Date(a.date)
+                        })
                         props.setData(newData);
-                        setSubDate('');
+                        setSubDate(new Date());
                         setSubType('');
                         setSubHotel('');
                         setSubTown('');
@@ -91,7 +115,7 @@ const SubForm = (props) => {
 
 
     const options = [
-        {key: "northernSub", text: "Northern Sub"},
+        // {key: "northernSub", text: "Northern Sub"},
         {key: "fullSub", text: "Full Sub"},
         {key: "mealSub", text: "Meal Sub"},
     ]
@@ -103,8 +127,8 @@ const SubForm = (props) => {
             </div>
 
 
-            <form className="m-10">
-                <div className="grid grid-cols-4">
+            <form className="mr-10 w-full">
+                <div className="lg:grid lg:grid-cols-4">
                     <div className="col-span-1 px-2">
                         <DatePicker
                             label='Select Date'
@@ -133,6 +157,7 @@ const SubForm = (props) => {
                             label='Enter Hotel Name'
                             onChange={handleHotelChange}
                             value={subHotel}
+                            disabled={subHotel === 'N/A' ? true : false}
                         />                        
                     </div>
                     <div className="col-span-1 px-2">
@@ -141,6 +166,7 @@ const SubForm = (props) => {
                             label='Enter Town Name'
                             onChange={handleTownChange}
                             value={subTown}
+                            disabled={subTown === 'N/A' ? true : false}
                         />
                     </div>
                 </div>
