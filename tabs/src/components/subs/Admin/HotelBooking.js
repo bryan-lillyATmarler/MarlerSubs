@@ -1,8 +1,32 @@
-import { DatePicker, Dropdown, TextField } from '@fluentui/react'
-import React, { useState } from 'react'
+import { DatePicker, TextField } from '@fluentui/react'
+import React, { useState, useEffect } from 'react'
+import SubmitFail from '../SubmitFail';
+import SubmitSuccess from '../SubmitSuccess';
 import HotelTable from './HotelTable';
 
+
 const HotelBooking = () => {
+
+    const [hotelData, setHotelData] = useState([]);
+    const [success, setSuccess] = useState('');
+
+    let url = 'https://marler-api.herokuapp.com/api/v1'
+
+    useEffect(() => {
+        
+
+        fetch(`${url}/hotels`, {
+            method: 'GET'
+        })
+            .then(res => res.json())
+            .then((data) => {
+                // console.log(data);
+                setHotelData(data.data)
+            })
+            //eslint-disable-next-line
+    }, []);
+
+
     const [hotelEmployee, setHotelEmployee] = useState('');
     const [hotelCheckin, setHotelCheckin] = useState('');
     const [hotelHotel, setHotelHotel] = useState('');
@@ -11,8 +35,8 @@ const HotelBooking = () => {
     const [hotelRate, setHotelRate] = useState('');
 
 
-    const handleEmployeeChange = (e, selectedOption) => {
-        setHotelEmployee(selectedOption);
+    const handleEmployeeChange = (e) => {
+        setHotelEmployee(e.target.value);
     }
 
     const handleCheckinChange = (value) => {
@@ -38,16 +62,55 @@ const HotelBooking = () => {
     const handleHotelSubmit = (e) => {
         e.preventDefault();
 
-        const hotelData = {
+        const newHotelData = {
             employee: hotelEmployee,
-            checkin: hotelCheckin,
-            hotel: hotelHotel,
+            checkIn: hotelCheckin,
+            hotelName: hotelHotel,
             town: hotelTown,
-            nights: hotelNumberNights,
+            numNights: hotelNumberNights,
             rate: hotelRate
         }
 
-        console.log(hotelData);
+        fetch(`${url}/hotels`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newHotelData)
+        })
+            .then(res => res.json())
+            .then((data) => {
+                if(data.success){
+                    setSuccess('success');
+                    let newData = [...hotelData];
+                    newData.push(data.data);
+                    setHotelData(newData);
+                    setHotelEmployee('');
+                    setHotelCheckin('');
+                    setHotelNumberNights('');
+                    setHotelHotel('');
+                    setHotelRate('');
+                    setHotelTown('');
+                } else {
+                    setSuccess('failed');
+                }
+                setTimeout(() => {
+                    setSuccess('');
+                }, 2000);
+            })
+    }
+
+    const deleteHotel = (hotelID) => {
+        fetch(`${url}/hotels/${hotelID}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then((data) => {
+                let newData = hotelData.filter((obj) => {
+                    return obj._id !== hotelID
+                })
+                setHotelData(newData);
+            })
     }
 
   return (
@@ -56,69 +119,78 @@ const HotelBooking = () => {
             <h1>Hotel Booking Information</h1>
         </div>
 
-        <form>
-            <div className='lg:grid lg:grid-cols-2'>
-                {/* NAME OF PERSON */}
-                <div className='m-5 col-span-1'>
-                    <Dropdown 
-                        label='Select Employee'
-                    />
-                </div>
+          <form>
+              <div className='lg:grid lg:grid-cols-2'>
+                  {/* NAME OF PERSON */}
+                  <div className='m-5 col-span-1'>
+                      <TextField
+                          label="Enter Employee Name"
+                          onChange={handleEmployeeChange}
+                          value={hotelEmployee}
+                      />
+                  </div>
 
-                {/* CHECK IN Date */}
-                <div className='m-5 col-span-1'>
-                    <DatePicker 
-                        label='Select Check-In Date'
-                        allowTextInput
-                        onSelectDate={handleCheckinChange}
-                        placeholder='Select Check-In Date'
-                        value={hotelCheckin}
-                    />
-                </div>
+                  {/* CHECK IN Date */}
+                  <div className='m-5 col-span-1'>
+                      <DatePicker
+                          label='Select Check-In Date'
+                          allowTextInput
+                          onSelectDate={handleCheckinChange}
+                          placeholder='Select Check-In Date'
+                          value={hotelCheckin}
+                      />
+                  </div>
 
-                {/* HOTEL */}
-                <div className='m-5 col-span-1'>
-                    <TextField 
-                        label='Enter Hotel Name'
-                        onChange={handleHotelChange}
-                        value={hotelHotel}
-                    />
-                </div>
+                  {/* HOTEL */}
+                  <div className='m-5 col-span-1'>
+                      <TextField
+                          label='Enter Hotel Name'
+                          onChange={handleHotelChange}
+                          value={hotelHotel}
+                      />
+                  </div>
 
-                {/* TOWN */}
-                <div className='m-5 col-span-1'>
-                    <TextField 
-                        label='Enter Town Name'
-                        onChange={handleTownChange}
-                        value={hotelTown}
-                    />
-                </div>
+                  {/* TOWN */}
+                  <div className='m-5 col-span-1'>
+                      <TextField
+                          label='Enter Town Name'
+                          onChange={handleTownChange}
+                          value={hotelTown}
+                      />
+                  </div>
 
-                {/* NUMBER OF NIGHTS */}
-                <div className='m-5 col-span-1'>
-                    <TextField 
-                        label='Enter Number of Nights'
-                        onChange={handleNumNightsChange}
-                        value={hotelNumberNights}
-                    />
-                </div>
+                  {/* NUMBER OF NIGHTS */}
+                  <div className='m-5 col-span-1'>
+                      <TextField
+                          label='Enter Number of Nights'
+                          onChange={handleNumNightsChange}
+                          value={hotelNumberNights}
+                      />
+                  </div>
 
-                {/* RATE PER NIGHT */}
-                <div className='m-5 col-span-1'>
-                    <TextField 
-                        label='Enter the Rate Per Night'
-                        onChange={handleRateChange}
-                        value={hotelRate}
-                    />
-                </div>
-
-                <div className='m-5 col-span-2 flex'>
-                    <button onClick={handleHotelSubmit} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Submit Hotel Booking Information</button>
-                </div>
-            </div>
-        </form>
+                  {/* RATE PER NIGHT */}
+                  <div className='m-5 col-span-1'>
+                      <TextField
+                          label='Enter the Rate Per Night'
+                          onChange={handleRateChange}
+                          value={hotelRate}
+                      />
+                  </div>
+                  <div className='m-5 col-span-2 flex'>
+                      <button onClick={handleHotelSubmit} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Submit Hotel Booking Information</button>
+                  </div>
+                  <div className="h-20 w-full flex justify-center col-span-2">
+                      {success === 'success' &&
+                          <SubmitSuccess className='m-auto' />
+                      }
+                      {success === 'failed' &&
+                          <SubmitFail className='m-auto' />
+                      }
+                  </div>
+              </div>
+          </form>
     
-        <HotelTable />
+        <HotelTable hotelData={hotelData} deleteHotel={deleteHotel} />
     </div>
   )
 }

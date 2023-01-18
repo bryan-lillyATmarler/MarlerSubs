@@ -5,7 +5,7 @@ const SubmitSuccess = (props) => {
     return (
         <>
             <FcCheckmark className="my-auto" size={35} />
-            <h2 className="my-auto pl-5 text-lg font-bold">Sub added successfully</h2>
+            <h2 className="my-auto pl-5 text-lg font-bold">Success</h2>
         </>
     )
 }
