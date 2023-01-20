@@ -1,9 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { DatePicker, Dropdown, TextField } from "@fluentui/react";
 import SubmitSuccess from './SubmitSuccess';
 import SubmitFail from './SubmitFail';
+import { TeamsFxContext } from "../Context";
 
 const SubForm = (props) => {
+    const { themeString } = useContext(TeamsFxContext);
+
+    const labelStyles = {
+        wrapper: {
+            selectors: {
+                'label': {
+                    color: `${themeString === 'dark' ? 'white' : 'black'}`
+                }
+            }
+        }
+    }
 
     //sub data state
     const [subDate, setSubDate] = useState(new Date());
@@ -40,7 +52,6 @@ const SubForm = (props) => {
         }
 
         setSubDate(value);
-        // console.log(value)
     }
 
     //handle sub hotel change
@@ -132,6 +143,7 @@ const SubForm = (props) => {
                     <div className="col-span-1 px-2">
                         <DatePicker
                             label='Select Date'
+                            styles={labelStyles}
                             isRequired
                             //   className={styles.control}
                             allowTextInput
@@ -144,6 +156,11 @@ const SubForm = (props) => {
                     <div className="col-span-1 px-2">
                         <Dropdown 
                             label='Select Sub Type'
+                            styles={{
+                                label: {
+                                    color: `${themeString === 'dark' ? 'white' : 'black'}`
+                                }
+                            }}
                             required
                             options={options}
                             placeholder="Select a Sub Type"
@@ -155,6 +172,7 @@ const SubForm = (props) => {
                         <TextField 
                             required
                             label='Enter Hotel Name'
+                            styles={labelStyles}
                             onChange={handleHotelChange}
                             value={subHotel}
                             disabled={subHotel === 'N/A' ? true : false}
@@ -164,6 +182,7 @@ const SubForm = (props) => {
                         <TextField 
                             required
                             label='Enter Town Name'
+                            styles={labelStyles}
                             onChange={handleTownChange}
                             value={subTown}
                             disabled={subTown === 'N/A' ? true : false}
@@ -173,7 +192,7 @@ const SubForm = (props) => {
 
                 <div className="col-span-4 flex mt-5">
 
-                    <button onClick={handleSubmit} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Submit</button>
+                    <button onClick={handleSubmit} className={`border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300 ${themeString === 'dark' ? 'text-black': ''}`}>Submit</button>
 
                 </div>
             </form>

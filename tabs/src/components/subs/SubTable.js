@@ -1,7 +1,7 @@
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 import React, { useState } from 'react'
 import { useBoolean } from '@fluentui/react-hooks';
-import { DatePicker, TextField } from '@fluentui/react';
+import { DatePicker, Dropdown, TextField } from '@fluentui/react';
 import { FcCheckmark } from "react-icons/fc";
 import { FcHighPriority } from "react-icons/fc";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -19,22 +19,47 @@ const modelProps = {
 const SubTable = (props) => {
     const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
 
+    const options = [
+        // {key: "northernSub", text: "Northern Sub"},
+        {key: "fullSub", text: "Full Sub"},
+        {key: "mealSub", text: "Meal Sub"},
+    ]
+
     const [subDate, setSubDate] = useState('');
     const [subHotel, setSubHotel] = useState('');
     const [subTown, setSubTown] = useState('');
+    const [subType, setSubType] = useState('');
     const [subID, setSubID] = useState('');
     const [success, setSuccess] = useState('');
 
-    const handleEditSub = (key, date, hotel, town) => {
+    const handleEditSub = (key, date, hotel, town, type) => {
+        options.forEach(option => {
+            if(option.text === type){
+                type = option.key
+            }
+        })
         setSubDate(new Date(date));
         setSubHotel(hotel);
         setSubTown(town);
+        setSubType(type);
         setSubID(key);
         toggleHideDialog();
     }
 
     const handleDateChange = (value) => {
+        let currentDate = new Date();
+        let enteredDate = new Date(value);
 
+        if((currentDate - enteredDate) > 12096e5){
+            window.alert('Cannot select a date from more than 2 weeks ago');
+            value = new Date();
+        }
+
+        if(enteredDate > currentDate){
+            window.alert('Cannot select a date in the future');
+            value = new Date();
+        }
+        
         setSubDate(value);
     }
 
@@ -46,13 +71,25 @@ const SubTable = (props) => {
         setSubTown(e.target.value);
     }
 
+    const handleSubTypeChange = (e, selectedOption) => {
+        setSubType(selectedOption.key);
+    }
+
     const url = 'https://marler-api.herokuapp.com/api/v1/subs';
 
     const handleSubmit = () => {
+        let type;
+        options.forEach(option => {
+            if(option.key === subType){
+                type = option.text
+            }
+        });
+        
         const subData = {
             date: subDate,
             hotel: subHotel,
-            town: subTown
+            town: subTown,
+            subType: type
         }
 
         fetch(`${url}/${subID}`, {
@@ -69,12 +106,14 @@ const SubTable = (props) => {
                 setTimeout(() => {
                     setSuccess('');
                     toggleHideDialog();
-                    props.setSubData([]);
+                    let newData = [...props.data];
+                    let index = newData.map(function(elem) {return elem._id}).indexOf(subID);
+                    newData[index] = data.data;
+                    props.setData(newData);
                 }, 2000);
             } else {
                 setSuccess('fail');
-            }
-            
+            }       
         });
     }
 
@@ -89,7 +128,10 @@ const SubTable = (props) => {
                 setTimeout(() => {
                     setSuccess('');
                     toggleHideDialog();
-                    props.setSubData([]);
+                    let newData = [...props.data];
+                    let index = newData.map(function(elem) {return elem._id}).indexOf(subID);
+                    newData.splice(index, 1);
+                    props.setData(newData);
                 }, 2000);
             } else {
                 setSuccess('fail');
@@ -118,7 +160,7 @@ const SubTable = (props) => {
                     {
                         props.data.map((sub) => {
                             return (
-                                <tr key={sub._id} onClick={sub.approved ? () => {} : () => handleEditSub(sub._id, sub.date, sub.hotel, sub.town)} className={`${sub.approved ? 'bg-green-300' : 'cursor-pointer'} `}>
+                                <tr key={sub._id} onClick={sub.approved ? () => {} : () => handleEditSub(sub._id, sub.date, sub.hotel, sub.town, sub.subType)} className={`${sub.approved ? 'bg-green-300' : 'cursor-pointer'} `}>
                                     <td className="border border-slate-400 text-center h-10">{new Date(sub.date).toLocaleDateString("en-US", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</td>
                                     <td className="border border-slate-400 text-center h-10">{sub.subType}</td>
                                     <td className="border border-slate-400 text-center h-10">{sub.hotel}</td>
@@ -141,6 +183,16 @@ const SubTable = (props) => {
                         label='Select Date'
                         value={subDate}
                         onSelectDate={handleDateChange}
+                    />
+                </div>
+                <div className='mb-5'>
+                    <Dropdown 
+                        label='Select Sub Type'
+                        options={options}
+                        onChange={handleSubTypeChange}
+                        value={subType}
+                        defaultSelectedKey={subType}
+                        // defaultValue={subType}
                     />
                 </div>
                 <div className='mb-5'>

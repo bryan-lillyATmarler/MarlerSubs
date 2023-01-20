@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
 import { useBoolean } from '@fluentui/react-hooks';
 import { DatePicker } from '@fluentui/react';
 import { FcHighPriority, FcCheckmark } from "react-icons/fc";
+import { TeamsFxContext } from "../Context";
 
 const modelProps = {
     isBlocking: false,
@@ -14,6 +15,8 @@ const dialogContentProps = {
 };
 
 const BookedHotels = ({userName}) => {
+    const { themeString } = useContext(TeamsFxContext);
+
     const [employeeHotels, setEmployeeHotels] = useState([]);
     const [checkOutDate, setCheckOutDate] = useState(new Date());
     const [hotel, setHotel] = useState();
@@ -103,50 +106,57 @@ const BookedHotels = ({userName}) => {
 
   return (
     <>
+    <div className={`w-full border border-black p-5 ${themeString === 'dark' ? 'text-black': ''}`}>
         <div className='w-full flex mb-5'>
-            <h1 className='m-auto'>Current Booked Hotels</h1>
+            <h1 className={`ml-2 m-auto ${themeString === 'dark' ? 'text-white' : ''}`}>Current Booked Hotels</h1>
         </div>
           {employeeHotels.map((hotel) => {
               return (
                   <>
-                      <div className='border p-5 border-black bg-slate-200 mb-5 mx-5 grid grid-cols-4'>
-                          <div className='col-span-3 w-full'>
-                              <div className='grid grid-cols-2'>
-                                  <div className='grid-span-1'>
-                                        <div className='grid grid-cols-2'>
-                                            <div className='col-span-1'><h2 className='text-xl'>Booked at: </h2></div>
-                                            <div className='col-span-1'><span className='font-bold text-xl'>{hotel.hotelName}</span></div>
-                                        </div>
-                                        <div className='grid grid-cols-2'>
-                                            <div className='col-span-1'><h2 className='text-xl'>Check in Date:</h2></div>
-                                            <div className='col-span-1'><span className='font-bold text-xl'>{new Date(hotel.checkIn).toLocaleDateString("en-US", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span></div>
-                                        </div>    
+                      <div className='w-full border p-5 border-black bg-slate-200 mb-5 rounded-md md:grid md:grid-cols-4'>
+                          <div className='md:col-span-3 w-full'>
+                              <div className='md:grid md:grid-cols-2'>
+                                  <div className='md:grid-span-1'>
+                                      <div className='mb-5 md:grid md:grid-cols-2'>
+                                          <div className='md:col-span-1'><h2 className='text-xl'>Hotel: </h2></div>
+                                          <div className='md:col-span-1'><span className='font-bold text-xl'>{hotel.hotelName}</span></div>
+                                      </div>
+                                      <div className='mb-5 md:grid md:grid-cols-2'>
+                                          <div className='md:col-span-1'><h2 className='text-xl'>Town: </h2></div>
+                                          <div className='md:col-span-1'><span className='font-bold text-xl'>{hotel.town}</span></div>
+                                      </div>
+                                      <div className='mb-5 md:grid md:grid-cols-2'>
+                                          <div className='md:col-span-1'><h2 className='text-xl'>Number of Nights: </h2></div>
+                                          <div className='md:col-span-1'><span className='font-bold text-xl'>{hotel.numNights}</span></div>
+                                      </div>
+                                      
                                   </div>
-                                  <div className='grid-span-1'>
-                                  <div className='grid grid-cols-2'>
-                                            <div className='col-span-1'><h2 className='text-xl'>Number of Nights: </h2></div>
-                                            <div className='col-span-1'><span className='font-bold text-xl'>{hotel.numNights}</span></div>
-                                        </div>
-                                        <div className='grid grid-cols-2'>
-                                            <div className='col-span-1'><h2 className='text-xl'>Check Out Date:</h2></div>
-                                            <div className='col-span-1'><span className='font-bold text-xl'>{new Date(hotel.checkOut).toLocaleDateString("en-US", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span></div>
-                                        </div>  
+                                  <div className='md:grid-span-1'>
+                                      <div className='mb-5 md:grid md:grid-cols-2'>
+                                          <div className='md:col-span-1'><h2 className='text-xl'>Check in Date:</h2></div>
+                                          <div className='md:col-span-1'><span className='font-bold text-xl'>{new Date(hotel.checkIn).toLocaleDateString("en-US", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span></div>
+                                      </div>
+                                      <div className='mb-5 md:grid md:grid-cols-2'>
+                                          <div className='md:col-span-1'><h2 className='text-xl'>Check Out Date:</h2></div>
+                                          <div className='md:col-span-1'><span className='font-bold text-xl'>{new Date(hotel.checkOut).toLocaleDateString("en-US", { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span></div>
+                                      </div>
                                   </div>
                               </div>
-                              
+
                           </div>
-                          <div className="col-span-1 w-full m-auto flex">
-                            {(hotel.checkedOutEarly || pastCheckOut(hotel.checkOut)) && 
-                                <div className="border border-black px-10 py-3 rounded-md m-auto bg-red-300 text-xl">
-                                    Checked Out
-                                </div>
-                            }
-                            {(!hotel.checkedOutEarly && !pastCheckOut(hotel.checkOut)) &&
-                                <button onClick={() => handleCheckOutEarly(hotel)} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Check Out</button>
-                            }
-                            {}                       
+                          <div className="md:col-span-1 w-full m-auto flex">
+                              {(hotel.checkedOutEarly || pastCheckOut(hotel.checkOut)) &&
+                                  <div className="border border-black px-10 py-3 rounded-md m-auto bg-red-300 text-xl text-center">
+                                      Checked Out
+                                  </div>
+                              }
+                              {(!hotel.checkedOutEarly && !pastCheckOut(hotel.checkOut)) &&
+                                  <button onClick={() => handleCheckOutEarly(hotel)} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Check Out</button>
+                              }
+                              { }
                           </div>
                       </div>
+
                   </>
               )
           })}
@@ -185,6 +195,7 @@ const BookedHotels = ({userName}) => {
                     </div>
                 </DialogFooter>
             </Dialog>
+            </div>
     </>
   )
 }

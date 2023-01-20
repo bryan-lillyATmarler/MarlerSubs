@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react'
 import SubmitFail from '../SubmitFail';
 import SubmitSuccess from '../SubmitSuccess';
 import HotelTable from './HotelTable';
-
+import { useContext } from "react";
+import { TeamsFxContext } from "../../Context";
 
 const HotelBooking = () => {
 
@@ -113,6 +114,18 @@ const HotelBooking = () => {
             })
     }
 
+    const { themeString } = useContext(TeamsFxContext);
+
+    const labelStyles = {
+        wrapper: {
+            selectors: {
+                'label': {
+                    color: `${themeString === 'dark' ? 'white' : 'black'}`
+                }
+            }
+        }
+    }
+
   return (
     <div>
         <div className='ml-5'>
@@ -124,6 +137,7 @@ const HotelBooking = () => {
                   {/* NAME OF PERSON */}
                   <div className='m-5 col-span-1'>
                       <TextField
+                            styles={labelStyles}
                           label="Enter Employee Name"
                           onChange={handleEmployeeChange}
                           value={hotelEmployee}
@@ -134,6 +148,7 @@ const HotelBooking = () => {
                   <div className='m-5 col-span-1'>
                       <DatePicker
                           label='Select Check-In Date'
+                          styles={labelStyles}
                           allowTextInput
                           onSelectDate={handleCheckinChange}
                           placeholder='Select Check-In Date'
@@ -145,6 +160,7 @@ const HotelBooking = () => {
                   <div className='m-5 col-span-1'>
                       <TextField
                           label='Enter Hotel Name'
+                          styles={labelStyles}
                           onChange={handleHotelChange}
                           value={hotelHotel}
                       />
@@ -154,6 +170,7 @@ const HotelBooking = () => {
                   <div className='m-5 col-span-1'>
                       <TextField
                           label='Enter Town Name'
+                          styles={labelStyles}
                           onChange={handleTownChange}
                           value={hotelTown}
                       />
@@ -163,6 +180,7 @@ const HotelBooking = () => {
                   <div className='m-5 col-span-1'>
                       <TextField
                           label='Enter Number of Nights'
+                          styles={labelStyles}
                           onChange={handleNumNightsChange}
                           value={hotelNumberNights}
                       />
@@ -172,6 +190,7 @@ const HotelBooking = () => {
                   <div className='m-5 col-span-1'>
                       <TextField
                           label='Enter the Rate Per Night'
+                          styles={labelStyles}
                           onChange={handleRateChange}
                           value={hotelRate}
                       />
