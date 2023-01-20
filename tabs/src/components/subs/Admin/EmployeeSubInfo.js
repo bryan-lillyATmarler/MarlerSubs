@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Dropdown } from '@fluentui/react/lib/Dropdown';
 import { Checkbox } from '@fluentui/react';
 import { AiOutlineCheck } from "react-icons/ai";
+import { TeamsFxContext } from "../../Context";
+
 
 const EmployeeSubInfo = () => {
+    const { themeString } = useContext(TeamsFxContext);
+
     const [employeeNames, setEmployeeNames] = useState([]);
     const [employeeData, setEmployeeData] = useState([]);
     const [isFetching, setIsFetching] = useState(true);
     const [isChecked, setIsChecked] = useState([]);
+    const [employee, setEmployee] = useState('');
 
     const checkChange = (value) => {
         //spread array
@@ -55,13 +60,14 @@ const EmployeeSubInfo = () => {
         .then(data => {
             console.log(data.data)
             setEmployeeData(data.data);
+            setEmployee(user);
         });
     }
 
     const approvedUpdate = () => {
         let approvedIDs = [...isChecked];
         console.log(JSON.stringify(approvedIDs))
-        fetch(`http://localhost:5000/api/v1/subs/admin/approve`, {
+        fetch(`${url}/admin/approve`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -71,6 +77,7 @@ const EmployeeSubInfo = () => {
         .then(res => res.json())
         .then((data) => {
             console.log(data);
+            fetchEmployeeData(employee);
         })
         setIsChecked([]);
     }
@@ -135,7 +142,7 @@ const EmployeeSubInfo = () => {
             }
             {isChecked.length !== 0 &&
                 <div className='m-5 col-span-2 flex'>
-                    <button onClick={() => approvedUpdate()} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Approve Subs</button>
+                    <button onClick={() => approvedUpdate()} className={`border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300 ${themeString === 'dark' ? 'text-black' : ''}`}>Approve Subs</button>
                 </div>
             }
         </>

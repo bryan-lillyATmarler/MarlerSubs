@@ -22,10 +22,14 @@ export function Home() {
 
 
   const [subData, setSubData] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isAdmin, setIsAdmin] = useState();
 
   useEffect(() => {
-    // console.log(data)
     fetchUserData();
+    fetchAdminUsers();
+    // console.log(data)
+    
     //eslint-disable-next-line
   }, [data]);
 
@@ -54,6 +58,31 @@ export function Home() {
     }
   }
 
+  const fetchAdminUsers = () => {
+    setIsFetching(true);
+    fetch('https://marler-api.herokuapp.com/api/v1/users', {
+      method: 'GET'
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.success){
+        checkAdmin(data.data);
+      }
+      
+      setIsFetching(false);
+    })
+  }
+
+  const checkAdmin = (arr) => {
+    arr.forEach((user) => {
+      if(user.username === userName){
+        setIsAdmin(true)
+      }
+    })
+    // console.log(adminUsers.includes((elem) => elem.username === userName));
+    // setIsAdmin();
+  }
+
   return (
     <>
       <div className="">
@@ -61,7 +90,7 @@ export function Home() {
         <h1 className="text-center">{userName ? userName : "Can't find your username"}</h1>
       </div>
       
-      {userName !== 'Byan Lilly' &&
+      {!isAdmin &&
         <>
           <BookedHotels userName={userName} />
           <SubForm data={subData} setData={setSubData} userName={userName} />
@@ -73,7 +102,7 @@ export function Home() {
       }
 
       {/* ADMIN STUFF */}
-      {userName === 'Byan Lilly' &&
+      {isAdmin &&
         <>
           <div>
             <h1 className="text-2xl text-center">Sub Administration Dashboard</h1>

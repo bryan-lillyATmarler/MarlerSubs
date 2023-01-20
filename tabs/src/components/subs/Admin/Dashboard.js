@@ -1,4 +1,5 @@
 import React from 'react'
+import AddAdmin from './AddAdmin';
 import EmployeeSubInfo from './EmployeeSubInfo';
 import HotelBooking from './HotelBooking';
 
@@ -9,6 +10,7 @@ const Dashboard = () => {
         <>
             <HotelBooking />
             <EmployeeSubInfo />
+            <AddAdmin />
         </>
     )
 }

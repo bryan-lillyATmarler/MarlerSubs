@@ -1,9 +1,8 @@
 import { DatePicker, TextField } from '@fluentui/react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import SubmitFail from '../SubmitFail';
 import SubmitSuccess from '../SubmitSuccess';
 import HotelTable from './HotelTable';
-import { useContext } from "react";
 import { TeamsFxContext } from "../../Context";
 
 const HotelBooking = () => {
@@ -196,7 +195,7 @@ const HotelBooking = () => {
                       />
                   </div>
                   <div className='m-5 col-span-2 flex'>
-                      <button onClick={handleHotelSubmit} className="border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300">Submit Hotel Booking Information</button>
+                      <button onClick={handleHotelSubmit} className={`border border-black px-10 py-3 rounded-md m-auto bg-blue-100 text-xl hover:bg-blue-300 ${themeString === 'dark' ? 'text-black' : ''}`}>Submit Hotel Booking Information</button>
                   </div>
                   <div className="h-20 w-full flex justify-center col-span-2">
                       {success === 'success' &&
