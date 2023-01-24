@@ -1,10 +1,11 @@
 import { Dialog, DialogType, DialogFooter } from '@fluentui/react/lib/Dialog';
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useBoolean } from '@fluentui/react-hooks';
 import { DatePicker, Dropdown, TextField } from '@fluentui/react';
 import { FcCheckmark } from "react-icons/fc";
 import { FcHighPriority } from "react-icons/fc";
 import { AiOutlineCheck } from "react-icons/ai";
+import { TeamsFxContext } from "../Context";
 
 const modelProps = {
     isBlocking: false,
@@ -17,6 +18,7 @@ const modelProps = {
 
 
 const SubTable = (props) => {
+    const { themeString } = useContext(TeamsFxContext);
     const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
 
     const options = [
@@ -143,6 +145,9 @@ const SubTable = (props) => {
         <>
             <div className="mb-5">
                 <h3 className="text-2xl">Your Current Logged Subs</h3>
+                {/* <h2 className={`${themeString === 'dark' ? 'text-white' : ''} mt-5 text-xl`}>These are your current logged subs</h2> */}
+                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} mt-5 text-xl`}>Any subs highlighted in green have been approved</h2>
+                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} mt-5 text-xl`}>You may edit any sub that is NOT highlighted by clicking on the row and selecting the new information you would like to add</h2>
             </div>
 
 

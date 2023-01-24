@@ -107,8 +107,9 @@ const BookedHotels = ({userName}) => {
   return (
     <>
     <div className={`w-full border border-black p-5 ${themeString === 'dark' ? 'text-black': ''}`}>
-        <div className='w-full flex mb-5'>
+        <div className='w-full mb-5'>
             <h1 className={`ml-2 m-auto ${themeString === 'dark' ? 'text-white' : ''}`}>Current Booked Hotels</h1>
+            <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl mt-5`}>If you're going to check out early of a hotel please click the "Check Out Early" button to let admin know of your intentions.</h2>
         </div>
           {employeeHotels.map((hotel) => {
               return (

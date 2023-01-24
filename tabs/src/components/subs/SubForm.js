@@ -133,8 +133,10 @@ const SubForm = (props) => {
 
     return (
         <>
-            <div className="text-center">
+            <div className="p-5">
                 <h1>Enter Your Daily Sub</h1>
+                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl`}>Select the sub that applies to you for any specific day.</h2>
+                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl`}>You cannot select date longer than two weeks of the present day or any future dates</h2>
             </div>
 
 
