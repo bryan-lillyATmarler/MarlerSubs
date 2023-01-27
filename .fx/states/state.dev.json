@@ -34,6 +34,6 @@
     "fx-resource-identity": {
         "identityName": "marlersubs803544",
         "identityResourceId": "/subscriptions/add5c8a3-3053-4799-8748-123aee274c6f/resourceGroups/marler-resource/providers/Microsoft.ManagedIdentity/userAssignedIdentities/marlersubs803544",
-        "identityClientId": "1ba8984d-dcb0-4798-a497-ef500afee195"
+        "identityClientId": "06b3cd9d-dd34-442f-947b-cbe32eb2d29d"
     }
 }

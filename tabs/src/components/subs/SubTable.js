@@ -85,8 +85,8 @@ const SubTable = (props) => {
             if(option.key === subType){
                 type = option.text
             }
-        });
-        
+        });f
+
         const subData = {
             date: subDate,
             hotel: subHotel,
