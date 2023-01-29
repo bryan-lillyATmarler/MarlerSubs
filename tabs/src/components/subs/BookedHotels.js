@@ -26,18 +26,28 @@ const BookedHotels = ({userName}) => {
     let url = 'https://marler-api.herokuapp.com/api/v1';
     
     useEffect(() => {
+        if(userName !== ""){
+            fetchBookedHotels();
+        }
+        //eslint-disable-next-line
+    }, [userName]);
+
+    const fetchBookedHotels = () => {
         fetch(`${url}/hotels?user=${userName}`, {
             method: 'GET'
         })
         .then((res) => res.json())
         .then((data) => {
             data.data.forEach(element => {
-                element.checkOut = getCheckOutDate(element.checkIn, element.numNights)
+                if(element.checkedOut){
+                    element.checkOut = element.checkedOut
+                } else {
+                    element.checkOut = getCheckOutDate(element.checkIn, element.numNights)
+                }                
             });
             setEmployeeHotels(data.data);
         });
-        //eslint-disable-next-line
-    }, [userName]);
+    }
 
     const getCheckOutDate = (date, numNights) => {
         let checkOutDate = new Date(date);
@@ -69,12 +79,13 @@ const BookedHotels = ({userName}) => {
         })
         .then((res) => res.json())
         .then((data) => {
-            console.log(data.data)
+            // console.log(data.data)
             if(data.success){
                 setSuccess('success');
                 let newData = [...employeeHotels];
                 const index = newData.map(e => e._id).indexOf(hotel._id);
                 newData[index] = data.data;
+                newData[index].checkOut = checkedOutDate;
                 setEmployeeHotels(newData);
             } else {
                 setSuccess('fail');
@@ -111,6 +122,9 @@ const BookedHotels = ({userName}) => {
             <h1 className={`ml-2 m-auto ${themeString === 'dark' ? 'text-white' : ''}`}>Current Booked Hotels</h1>
             <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl mt-5`}>If you're going to check out early of a hotel please click the "Check Out Early" button to let admin know of your intentions.</h2>
         </div>
+        {employeeHotels.length === 0 &&
+            <h2 className='text-xl border border-black rounded-lg mx-5 p-5 text-center bg-slate-200'>You have no hotels booked currently - If you are expecting one, please contact administration</h2>
+        }
           {employeeHotels.map((hotel) => {
               return (
                   <>

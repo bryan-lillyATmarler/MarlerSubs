@@ -70,58 +70,71 @@ const SubForm = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if (
-            subDate !== '' &&
-            subType !== '' &&
-            subHotel !== '' &&
-            subTown !== ''
-        ) {
-
-            let submitData = {
-                date: subDate,
-                subType: subType,
-                hotel: subHotel,
-                town: subTown,
-                user: props.userName
+        //check if a sub has already been submitted for this date
+        let alreadySubmitted = false;
+        props.data.forEach((sub) => {
+            if(new Date(subDate).toDateString() === new Date(sub.date).toDateString()){
+                alreadySubmitted = true;
+                return;
             }
+        });
 
-            let newData = [...props.data];
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(submitData)
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data.success) {
-                        setSuccess('success');
-                        console.log(data)
-                        newData.push(data.data);
-                        newData.sort((a, b) => {
-                            return new Date(b.date) - new Date(a.date)
-                        })
-                        props.setData(newData);
-                        setSubDate(new Date());
-                        setSubType('');
-                        setSubHotel('');
-                        setSubTown('');
-                    } else {
-                        setSuccess('failed');
-                    }
-                    setTimeout(() => {
-                        setSuccess('');
-                    }, 3000);
-                });
+        //if the date has laready been submitted give warning and do nothing
+        if (alreadySubmitted) {
+            window.alert("You already have a sub claimed for this date - please edit the submitted sub");
         } else {
-            setSuccess('failed')
-            setTimeout(() => {
-                setSuccess('')
-            }, 4000);
-        }
+            if (
+                subDate !== '' &&
+                subType !== '' &&
+                subHotel !== '' &&
+                subTown !== ''
+            ) {
 
+                let submitData = {
+                    date: subDate,
+                    subType: subType,
+                    hotel: subHotel,
+                    town: subTown,
+                    user: props.userName
+                }
+
+                let newData = [...props.data];
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(submitData)
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (data.success) {
+                            setSuccess('success');
+                            console.log(data)
+                            newData.push(data.data);
+                            newData.sort((a, b) => {
+                                return new Date(b.date) - new Date(a.date)
+                            })
+                            props.setData(newData);
+                            setSubDate(new Date());
+                            setSubType('');
+                            setSubHotel('');
+                            setSubTown('');
+                        } else {
+                            setSuccess('failed');
+                        }
+                        setTimeout(() => {
+                            setSuccess('');
+                        }, 3000);
+                    });
+            } else {
+                setSuccess('failed')
+                setTimeout(() => {
+                    setSuccess('')
+                }, 4000);
+            }
+        }
     }
 
 
@@ -136,7 +149,7 @@ const SubForm = (props) => {
             <div className="p-5">
                 <h1>Enter Your Daily Sub</h1>
                 <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl`}>Select the sub that applies to you for any specific day.</h2>
-                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl`}>You cannot select date longer than two weeks of the present day or any future dates</h2>
+                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl mt-5`}>You cannot select a date over two weeks from the present day or any future dates</h2>
             </div>
 
 

@@ -61,8 +61,23 @@ const SubTable = (props) => {
             window.alert('Cannot select a date in the future');
             value = new Date();
         }
-        
-        setSubDate(value);
+
+        //check if a sub has already been submitted for this date
+        let alreadySubmitted = false;
+        props.data.forEach((sub) => {
+            if(new Date(value).toDateString() === new Date(sub.date).toDateString()){
+                alreadySubmitted = true;
+                return;
+            }
+        });
+
+        if(alreadySubmitted){
+            window.alert("A sub for this date has already been submitted - Choose another date");
+            let oldDate = new Date(subDate);
+            setSubDate(oldDate);
+        } else {
+            setSubDate(value);
+        }
     }
 
     const handleHotelChange = (e) => {
@@ -74,18 +89,30 @@ const SubTable = (props) => {
     }
 
     const handleSubTypeChange = (e, selectedOption) => {
+        if(selectedOption.text === 'Full Sub'){
+            setSubHotel('N/A');
+            setSubTown('N/A');
+        } else {
+            setSubHotel('');
+            setSubTown('');
+        }
         setSubType(selectedOption.key);
     }
 
     const url = 'https://marler-api.herokuapp.com/api/v1/subs';
 
     const handleSubmit = () => {
+        if(subType === '' || subHotel === '' || subTown === ''){
+            window.alert("Please make sure all fields are not empty");
+            return;
+        }
+
         let type;
         options.forEach(option => {
             if(option.key === subType){
                 type = option.text
             }
-        });f
+        });
 
         const subData = {
             date: subDate,
@@ -145,7 +172,6 @@ const SubTable = (props) => {
         <>
             <div className="mb-5">
                 <h3 className="text-2xl">Your Current Logged Subs</h3>
-                {/* <h2 className={`${themeString === 'dark' ? 'text-white' : ''} mt-5 text-xl`}>These are your current logged subs</h2> */}
                 <h2 className={`${themeString === 'dark' ? 'text-white' : ''} mt-5 text-xl`}>Any subs highlighted in green have been approved</h2>
                 <h2 className={`${themeString === 'dark' ? 'text-white' : ''} mt-5 text-xl`}>You may edit any sub that is NOT highlighted by clicking on the row and selecting the new information you would like to add</h2>
             </div>
@@ -203,6 +229,7 @@ const SubTable = (props) => {
                 <div className='mb-5'>
                     <TextField 
                         label='Hotel Name'
+                        disabled={subHotel === 'N/A' ? true : false}
                         value={subHotel}
                         onChange={handleHotelChange}
                     />
@@ -210,29 +237,30 @@ const SubTable = (props) => {
                 <div className='mb-5'>
                     <TextField 
                         label='Town Name'
+                        disabled={subHotel === 'N/A' ? true : false}
                         value={subTown}
                         onChange={handleTownChange}
                     />
                 </div>
                 <div>
                     {success === 'success' &&
-                        <div className='flex'>
+                        <div className='flex justify-center'>
                             <FcCheckmark size={25} />
-                            <h3>Success</h3>
+                            <h3 className='ml-2 pt-1' >Success</h3>
                         </div>
                     }
                     {success === 'fail' &&
-                        <div className='flex'>
+                        <div className='flex justify-center'>
                             <FcHighPriority size={25} />
-                            <h3>A Problem Occured - Try Again</h3>
+                            <h3 className='ml-2 pt-1'>A Problem Occured - Try Again</h3>
                         </div>
                     }
                 </div>
                 <DialogFooter>
                     <div className='grid grid-cols-2'>
                         <button onClick={handleDelete} className="col-span-2 mb-10 border border-black px-10 rounded-md m-auto bg-red-300 text-lg hover:bg-blue-300">Delete Sub</button>
-                        <button onClick={handleSubmit} className="col-span-1 mr-5 border border-black px-10 rounded-md m-auto bg-blue-100 text-lg hover:bg-blue-300">Submit</button>
-                        <button onClick={toggleHideDialog} className="col-span-1 border border-black px-10 rounded-md m-auto bg-blue-100 text-lg hover:bg-blue-300">Cancel</button>           
+                        <button onClick={handleSubmit} className="md:col-span-1 col-span-2 mr-5 border border-black px-10 rounded-md m-auto bg-blue-100 text-lg hover:bg-blue-300">Submit</button>
+                        <button onClick={toggleHideDialog} className="md:col-span-1 col-span-2 mt-3 md:mt-0 border border-black px-10 rounded-md m-auto bg-blue-100 text-lg hover:bg-blue-300">Cancel</button>           
                     </div>
                 </DialogFooter>
             </Dialog>
