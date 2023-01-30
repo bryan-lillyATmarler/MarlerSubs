@@ -7,7 +7,6 @@ import { TeamsFxContext } from "./Context";
 
 export default function Tab() {
   const { themeString } = useContext(TeamsFxContext);
-  console.log(themeString)
   return (
     <div className={themeString === "default" ? "" : ""}>
       <Home />

@@ -26,28 +26,18 @@ const BookedHotels = ({userName}) => {
     let url = 'https://marler-api.herokuapp.com/api/v1';
     
     useEffect(() => {
-        if(userName !== ""){
-            fetchBookedHotels();
-        }
-        //eslint-disable-next-line
-    }, [userName]);
-
-    const fetchBookedHotels = () => {
         fetch(`${url}/hotels?user=${userName}`, {
             method: 'GET'
         })
         .then((res) => res.json())
         .then((data) => {
             data.data.forEach(element => {
-                if(element.checkedOut){
-                    element.checkOut = element.checkedOut
-                } else {
-                    element.checkOut = getCheckOutDate(element.checkIn, element.numNights)
-                }                
+                element.checkOut = getCheckOutDate(element.checkIn, element.numNights)
             });
             setEmployeeHotels(data.data);
         });
-    }
+        //eslint-disable-next-line
+    }, [userName]);
 
     const getCheckOutDate = (date, numNights) => {
         let checkOutDate = new Date(date);
@@ -58,7 +48,9 @@ const BookedHotels = ({userName}) => {
     }
 
     const submitCheckOutEarly = () => {
+        //calculate 
         let checkedOutDate = new Date(checkOutDate);
+        setCheckOutDate(checkedOutDate);
 
         let checkedOutEarly = true;
         if(hotel.checkOut === checkedOutDate || hotel.checkOut < checkedOutDate) {
@@ -79,7 +71,7 @@ const BookedHotels = ({userName}) => {
         })
         .then((res) => res.json())
         .then((data) => {
-            // console.log(data.data)
+            console.log(data.data)
             if(data.success){
                 setSuccess('success');
                 let newData = [...employeeHotels];
@@ -118,17 +110,22 @@ const BookedHotels = ({userName}) => {
   return (
     <>
     <div className={`w-full border border-black p-5 ${themeString === 'dark' ? 'text-black': ''}`}>
-        <div className='w-full mb-5'>
-            <h1 className={`ml-2 m-auto ${themeString === 'dark' ? 'text-white' : ''}`}>Current Booked Hotels</h1>
-            <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl mt-5`}>If you're going to check out early of a hotel please click the "Check Out Early" button to let admin know of your intentions.</h2>
-        </div>
-        {employeeHotels.length === 0 &&
-            <h2 className='text-xl border border-black rounded-lg mx-5 p-5 text-center bg-slate-200'>You have no hotels booked currently - If you are expecting one, please contact administration</h2>
+        {employeeHotels.length !== 0 &&
+            <div className='w-full mb-5'>
+                <h1 className={`ml-2 m-auto ${themeString === 'dark' ? 'text-white' : ''}`}>Current Booked Hotels</h1>
+                <h2 className={`${themeString === 'dark' ? 'text-white' : ''} text-xl mt-5`}>If you're going to check out early of a hotel please click the "Check Out Early" button to let admin know of your intentions.</h2>
+            </div>
         }
+        {employeeHotels.length === 0 &&
+            <div>
+                <h2 className={`ml-2 m-auto text-lg text-center ${themeString === 'dark' ? 'text-white' : ''}`}>You have no hotels booked currently</h2>
+            </div>
+        }
+        
           {employeeHotels.map((hotel) => {
               return (
-                  <>
-                      <div className='w-full border p-5 border-black bg-slate-200 mb-5 rounded-md md:grid md:grid-cols-4'>
+                  
+                      <div key={hotel._id} className='w-full border p-5 border-black bg-slate-200 mb-5 rounded-md md:grid md:grid-cols-4'>
                           <div className='md:col-span-3 w-full'>
                               <div className='md:grid md:grid-cols-2'>
                                   <div className='md:grid-span-1'>
@@ -172,7 +169,7 @@ const BookedHotels = ({userName}) => {
                           </div>
                       </div>
 
-                  </>
+                  
               )
           })}
         <Dialog
