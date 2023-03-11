@@ -22,7 +22,6 @@ export function Home() {
 
 
   const [subData, setSubData] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
   const [isAdmin, setIsAdmin] = useState();
 
   useEffect(() => {
@@ -59,7 +58,6 @@ export function Home() {
   }
 
   const fetchAdminUsers = () => {
-    setIsFetching(true);
     fetch('https://marler-api.herokuapp.com/api/v1/users', {
       method: 'GET'
     })
@@ -68,8 +66,6 @@ export function Home() {
       if(data.success){
         checkAdmin(data.data);
       }
-      
-      setIsFetching(false);
     })
   }
 
